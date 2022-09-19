@@ -6,13 +6,48 @@ const User = require('./models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('./middleware/auth');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
 
 const app = express();
 
 app.use(express.json());
 
-// Login goes here
+const options = {
+    definition: {
+        openapi : '3.0.0',
+        info : {
+            title: 'Node JS API Project for mongodb',
+            version: '1.0.0'
+        },
+        servers:[
+            {
+                url: 'http://localhost:4001/'
+            }
+        ]
+    },
+    apis: ['./app.js']
+}
 
+const swaggerSpec = swaggerJSDoc(options)
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec))
+
+/**
+ * @swagger
+ * /:
+ *  get:
+ *      summary: This api is used to check if get method is working or not
+ *      description: This api is used to check if get method is working or not
+ *      responses:
+ *          200:
+ *              description: To test Get method
+ */
+
+app.get('/', (req, res) => {
+    res.send('Welcome to test api');
+})
+
+// Login goes here
 // Register
 app.post("/register", async (req, res) => {
     
